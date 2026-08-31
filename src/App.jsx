@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import profileImg from './assets/prathmesh.png'
+import promptCert from './assets/Prompt-engineering.pdf'
+import genAi from './assets/Gen-AI.pdf'
+import jpMorgan from './assets/JP-Morgan-Certification.pdf'
 import './App.css'
 
 /* ─────────────────────────────────────────
@@ -76,7 +79,7 @@ const education = [
     degree: 'Master of Computer Applications (MCA)',
     school: 'Pimpri Chinchwad University, Pune',
     year: '2024 – 2026',
-    grade: 'CGPA: 7.83',
+    grade: 'CGPA: 7.85',
   },
   {
     icon: '🏫',
@@ -95,8 +98,39 @@ const education = [
 ]
 
 const certs = [
-  { icon: '🤖', title: 'Prompt Engineering for ChatGPT', issuer: 'Coursera' },
-  { icon: '🧠', title: 'Machine Learning Introduction', issuer: 'IBM' },
+  {
+    icon: '🤖',
+    title: 'Prompt Engineering for ChatGPT',
+    issuer: 'Coursera · Vanderbilt University',
+    date: 'Sep 30, 2025',
+    instructor: 'Dr. Jules White',
+    verifyUrl: 'https://coursera.org/verify/KLBCIDLIZV8A',
+    pdfFile: promptCert,
+    color: '#0056d3',        // Coursera blue
+    badge: '🏛️',
+  },
+  {
+    icon: '🧠',
+    title: 'Generative AI: Prompt Engineering Basics ',
+    issuer: 'IBM',
+    date: '2025',
+    instructor: 'Antonio Cangiano',
+    verifyUrl: 'https://coursera.org/share/e2664df2deb39c5341a2ec9cdbbfd86f',
+    pdfFile: genAi,
+    color: '#054ada',        // IBM blue
+    badge: '🔷',
+  },
+  {
+    icon: '🧠',
+    title: 'Software Engineering Job Simulation',
+    issuer: 'JPMorgan Chase & Co.',
+    date: 'July 16th, 2026',
+    instructor: 'Tom Brunskil',
+    verifyUrl: null,
+    pdfFile: jpMorgan,
+    color: '#054ada',        // IBM blue
+    badge: '💼',
+  },
 ]
 
 /* ─────────────────────────────────────────
@@ -195,7 +229,7 @@ function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const links = ['About', 'Skills', 'Projects', 'Education', 'Contact']
+  const links = ['About', 'Skills', 'Projects', 'Education', 'Contact', 'Certifications']
 
   const handleNav = (e, id) => {
     e.preventDefault()
@@ -271,7 +305,7 @@ function Hero() {
             </a>
             <a
               className="btn-secondary"
-              href="/Prathmesh-Yadav-Resume.pdf"
+              href="/Prathmesh_Yadav_Resume.pdf"
               download="Prathmesh-Yadav-Resume.pdf"
             >
               📄 Download Resume
@@ -485,23 +519,112 @@ function Education() {
    CERTIFICATIONS
 ───────────────────────────────────────── */
 function Certifications() {
+  const [flipped, setFlipped] = useState(null)
+
   return (
     <section className="section" id="certifications">
       <h2 className="section-title reveal">
         <span>Certifications</span>
       </h2>
-      <div className="certs-grid">
+      <div className="certs-grid-new">
         {certs.map((c, i) => (
           <div
-            className="cert-card reveal"
+            className={`cert-card-new reveal${flipped === i ? ' flipped' : ''}`}
             key={c.title}
             style={{ transitionDelay: `${i * 0.15}s` }}
           >
-            <div className="cert-icon">{c.icon}</div>
-            <div className="cert-info">
-              <h3>{c.title}</h3>
-              <p>{c.issuer}</p>
+            {/* ── FRONT ── */}
+            <div className="cert-face cert-front" style={{ '--cert-color': c.color }}>
+              {/* decorative top stripe */}
+              <div className="cert-stripe" />
+
+              {/* header row */}
+              <div className="cert-front-header">
+                <span className="cert-badge-icon">{c.badge}</span>
+                <span className="cert-issuer-pill">{c.issuer.split('·')[0].trim()}</span>
+              </div>
+
+              {/* certificate "paper" preview */}
+              {c.pdfFile ? (
+                <div className="cert-paper-preview actual-certificate">
+                  <iframe
+                    src={`${c.pdfFile}#toolbar=0&navpanes=0&scrollbar=0`}
+                    title={`${c.title} certificate`}
+                  />
+                </div>
+              ) : (
+                <div className="cert-paper-preview">
+                  <div className="cert-paper-inner">
+                    <div
+                      className="cert-paper-logo"
+                      style={{ fontSize: '2rem' }}
+                    >
+                      🔷
+                    </div>
+
+                    <div className="cert-paper-text">
+                      <div className="cert-paper-line wide" />
+                      <div className="cert-paper-line name" />
+                      <div className="cert-paper-line med" />
+                    </div>
+
+                    <div className="cert-paper-seal">★</div>
+                  </div>
+                </div>
+              )}
+
+              {/* title & meta */}
+              <h3 className="cert-front-title">{c.title}</h3>
+              <p className="cert-front-issuer">{c.issuer}</p>
+              {c.date && <p className="cert-front-date">📅 {c.date}</p>}
+
+              {/* flip hint */}
+
             </div>
+
+            {/* ── BACK ── */}
+
+            <div className="cert-stripe" />
+            <div className="cert-back-content">
+              <div className="cert-back-icon">{c.icon}</div>
+              <h3>{c.title}</h3>
+              <p className="cert-back-issuer">{c.issuer}</p>
+              {c.instructor && (
+                <p className="cert-back-meta">👨‍🏫 {c.instructor}</p>
+              )}
+              {c.date && (
+                <p className="cert-back-meta">📅 Issued: {c.date}</p>
+              )}
+              <div className="cert-back-actions">
+                {c.pdfFile && (
+                  <a
+                    href={c.pdfFile}
+                    download="Prathmesh-Prompt-Engineering-Certificate.pdf"
+                    className="cert-action-btn primary"
+                  >
+                    ⬇️ Download
+                  </a>
+                )}
+                {c.verifyUrl && (
+                  <a
+                    href={c.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cert-action-btn secondary"
+                  >
+                    🔗 Verify
+                  </a>
+                )}
+              </div>
+            </div>
+            <button
+              className="cert-flip-btn back"
+              onClick={() => setFlipped(null)}
+              aria-label="Go back"
+            >
+              ← Back
+            </button>
+
           </div>
         ))}
       </div>
